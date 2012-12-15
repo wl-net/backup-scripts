@@ -49,6 +49,6 @@ sync
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(expr $END_TIME - $START_TIME)
-echo -n "Backup completed in $TOTAL_TIME seconds"
+echo "Backup completed in $TOTAL_TIME seconds"
 exit 0
 
