@@ -20,7 +20,6 @@ echo "External Backup to ($EXTERNAL_DRIVE/Backups/$NOW) starting..."
 cd /tmp #for caution
 
 mkdir $EXTERNAL_DRIVE/Backups/$NOW 2> /dev/null
-mkdir $EXTERNAL_DRIVE/$Backups/NOW/Documents/ 2> /dev/null
 
 # Archived backups.
 rsync -avh /home/andrew/Documents/ $EXTERNAL_DRIVE/Backups/$NOW/Documents/ --delete > /dev/null
@@ -31,6 +30,7 @@ rsync -avh /home/andrew/Dropbox/ $EXTERNAL_DRIVE/Backups/$NOW/Dropbox/ --delete 
 rsync -avh /home/andrew/Music/ $EXTERNAL_DRIVE/Backups/Ongoing/Music/ --delete > /dev/null
 rsync -avh /home/andrew/Videos/ $EXTERNAL_DRIVE/Backups/Ongoing/Videos/ --delete > /dev/null
 rsync -avh /home/andrew/Pictures/ $EXTERNAL_DRIVE/Backups/Ongoing/Pictures/ --delete > /dev/null
+rsync -avh /home/andrew/.Applications/ $EXTERNAL_DRIVE/Backups/Ongoing/Applications/ --delete > /dev/null
 
 touch $EXTERNAL_DRIVE/Backups/Ongoing/
 
