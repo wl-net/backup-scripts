@@ -40,21 +40,22 @@ touch $EXTERNAL_DRIVE/Backups/Ongoing/
 sync
 
 echo "New backup ($NOW) created. Deleting old backups in 10 seconds:"
-ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d'
 
-sleep 10
-echo "Deleting old backups..."
 # Delete old backups.
 cd $EXTERNAL_DRIVE/Backups/
 
 if [ $(ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d' | wc -l) -ne 0 ]; then
+    ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d'
+    sleep 10
+    echo "Deleting old backups..."
     ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d' | xargs -d '\n' rm -r
+else
+    echo "No backups to delete (threshold not met), skipping"
 fi
 
 sync
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(expr $END_TIME - $START_TIME)
-echo  "Backup completed in $TOTAL_TIME seconds"
+echo "Backup completed in $TOTAL_TIME seconds"
 exit 0
-
