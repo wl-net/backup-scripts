@@ -2,19 +2,22 @@
 
 #######################################
 # WLNet External Drive backup system
-# Last Updated: 2012-12-14
+# Last Updated: 2013-01-26
 #######################################
 
 # Configuration options
-EXTERNAL_DRIVE=/media/datastore-ex-2
+EXTERNAL_DRIVE=/run/media/andrew/datastore-ex-1
 
 NOW=$(date +"%Y-%m-%d_%H-%M")
 START_TIME=$(date +%s)
+START_WORKING_PATH=$(pwd)
 
 if [ ! -d "$EXTERNAL_DRIVE" ]; then
     echo "External drive not plugged in/mounted."
     exit 1
 fi
+
+trap "echo ' aborting backup'; cd $START_WORKING_PATH; exit" SIGINT SIGTERM
 
 echo "External Backup to ($EXTERNAL_DRIVE/Backups/$NOW) starting..."
 cd /tmp #for caution
@@ -43,12 +46,15 @@ sleep 10
 echo "Deleting old backups..."
 # Delete old backups.
 cd $EXTERNAL_DRIVE/Backups/
-ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d' | xargs -d '\n' rm -r
+
+if [ $(ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d' | wc -l) -ne 0 ]; then
+    ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d' | xargs -d '\n' rm -r
+fi
 
 sync
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(expr $END_TIME - $START_TIME)
-echo "Backup completed in $TOTAL_TIME seconds"
+echo  "Backup completed in $TOTAL_TIME seconds"
 exit 0
 
