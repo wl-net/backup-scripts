@@ -31,6 +31,7 @@ rsync -avh /home/andrew/Dropbox/ $EXTERNAL_DRIVE/Backups/$NOW/Dropbox/ --delete 
 
 # Mirrored backups.
 rsync -avh /home/andrew/Music/ $EXTERNAL_DRIVE/Backups/Ongoing/Music/ --delete > /dev/null
+rsync -avh /home/andrew/Music/Podcasts/ $EXTERNAL_DRIVE/Backups/Ongoing/Podcasts/ --delete > /dev/null
 rsync -avh /home/andrew/Videos/ $EXTERNAL_DRIVE/Backups/Ongoing/Videos/ --delete > /dev/null
 rsync -avh /home/andrew/Pictures/ $EXTERNAL_DRIVE/Backups/Ongoing/Pictures/ --delete > /dev/null
 rsync -avh /home/andrew/.Applications/ $EXTERNAL_DRIVE/Backups/Ongoing/Applications/ --delete > /dev/null
@@ -44,11 +45,11 @@ echo "New backup ($NOW) created. Deleting old backups in 10 seconds:"
 # Delete old backups.
 cd $EXTERNAL_DRIVE/Backups/
 
-if [ $(ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d' | wc -l) -ne 0 ]; then
-    ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d'
+if [ $(ls $EXTERNAL_DRIVE/Backups/ -lt | sed -e '1,10d' | wc -l) -ne 0 ]; then
+    ls $EXTERNAL_DRIVE/Backups/ -lt | awk '{print $9}' | sed -e '1,10d'
     sleep 10
     echo "Deleting old backups..."
-    ls $EXTERNAL_DRIVE/Backups/ -t | sed -e '1,10d' | xargs -d '\n' rm -r
+    ls $EXTERNAL_DRIVE/Backups/ -lt | awk '{print $9}' | sed -e '1,10d' | xargs -d '\n' rm -r
 else
     echo "No backups to delete (threshold not met), skipping"
 fi
@@ -58,4 +59,5 @@ sync
 END_TIME=$(date +%s)
 TOTAL_TIME=$(expr $END_TIME - $START_TIME)
 echo "Backup completed in $TOTAL_TIME seconds"
+cd $START_WORKING_PATH
 exit 0
